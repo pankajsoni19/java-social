@@ -1,0 +1,65 @@
+message archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.html
+message archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.htmlmessage archiving.
+Extended stanza adressing : http://xmpp.org/extensions/xep-0033.html
+Verifying HTTP Requests via XMPP : http://xmpp.org/extensions/xep-0070.html
+Flexible Offline Message Retrieval : http://xmpp.org/extensions/xep-0013.html

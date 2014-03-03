@@ -1,0 +1,179 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Security Options</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+	<link href="/css/table-sort.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">OverView</label>
+		<ul class="nav nav-sidebar">
+			<li><a href="/seller/home">Overview</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li><a href="/secure/view_profile">View Profile</a></li>			
+			<li><a href="/secure/edit_profile">Edit Profile</a></li>
+			<li class=active><a href="#">Update Security Options</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+		  <h1 class="page-header" id="profile">Update Password</h1>
+		  <div style="max-width:240px;">
+			  <div style="display:none">			  
+				  <input type="password" class="form-control" name="passwd" id="passwd" style="margin-bottom:0px" placeholder="Enter new password" required><br/>
+				  <input type="password" class="form-control" name="passwd1" id="passwd1" style="margin-bottom:0px" placeholder="Re-Enter new password" required><br/>			  
+			  </div>
+			  <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="changePswd()">Change Password</button>
+			  <br/><br/>
+		  </div>		  
+		  <h1 class="page-header" id="profile">Update Security Question</h1>		  
+		   <div style="max-width:240px">
+			  <input type="text" class="form-control" name="sqa" id="sqq" style="margin-bottom:0px" placeholder="Enter new question" required><br/>
+			  <input type="text" class="form-control" name="sqa" id="sqa" style="margin-bottom:0px" placeholder="Enter new answer" required><br/>
+			  <input type="password" class="form-control" name="sqp" id="sqp" style="margin-bottom:0px" placeholder="Enter password" required><br/>		  
+			  <button class="btn btn-lg btn-primary btn-block" type="submit" onclick="updateSQ()">Update Security Question</button>
+		  </div>
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/sha3.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });	
+
+	$(document).keypress(function(e) {
+    	  if(e.which == 38){
+    		  e.preventDefault();
+    	  }   	  
+	});
+	
+	function changePswd(){
+		$.ajax({
+            type: "GET",
+            dataType: "",
+            url: "/secure/change_security/irp",
+			error: function(response){
+				bootbox.alert("Mail has already been sent, Kindly check your email, do check it is not in spam.", function(){});
+			},
+			success: function(response){
+				bootbox.alert("Password recovery link has been sent to your mail. Link would be valid only for next 2 hours.", function(){});
+			}
+		});	
+	};
+	
+	function updateSQ(){
+		var sqq = document.getElementById("sqq").value;
+		var sqa = document.getElementById("sqa").value;
+		var sqp = document.getElementById("sqp").value;
+		if(sqq.length < 4){
+			bootbox.alert("Security question has to be more than 3 characters in length.", function(){});
+			return;
+		}
+		if(sqa.length < 4){
+			bootbox.alert("Security answer has to be more than 3 characters in length.", function(){});
+			return;
+		}
+		if(sqa.length < 4){
+			bootbox.alert("Security answer has to be more than 3 characters in length.", function(){});
+			return;
+		}
+		if(sqa.length < 6){
+			bootbox.alert("Incorrect password.", function(){});
+			return;
+		}
+		sqp = CryptoJS.SHA3(sqp);
+		document.getElementById("sqp").value = sqp;
+		var toSend = "sq=" + sqq + "&sqa=" + sqa + "&sqp=" + sqp;
+		$.ajax({
+            type: "POST",
+            dataType: "",
+            url: "/secure/change_security/sq",
+            data: toSend,
+			error: function(response){
+				document.getElementById("sqp").value = "";
+				bootbox.alert("Incorrect password.", function(){});
+			},
+			success: function(response){
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Security question updated.");
+				document.getElementById("sqq").value = "";
+				document.getElementById("sqa").value = "";
+				document.getElementById("sqp").value = "";
+			}
+		});		
+	};
+ 
+    </script>
+  </body>
+</html>

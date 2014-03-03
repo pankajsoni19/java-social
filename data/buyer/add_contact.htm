@@ -1,0 +1,175 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Add new contact</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Candidate HomePage</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+	<span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/buyer/home">Overview</a></li>
+            <li class="active"><a href="#">Add Contact</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header" id="profile">Create Contact Profile</h1>
+	      <form style=margin-left:300px; role="form" class="form-signin" id="form" action="/add_contact" onsubmit="return validateForm();" method="post">
+	          <h2 class="sub-header" style="font-size: 20px;" id="geninfo">General Information</h2>
+	          <table>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>First Name</label></td>
+		          <td style=width:200px><input type=text class="form-control" name="First Name" id="fname" required autofocus></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Last Name</label></td>
+		          <td style=width:120px><input class="form-control"  name="Last Name" id="lname" type=text required></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Birth Date</label></td>
+		          <td style=width:120px><input type=date class="form-control" value="1991-01-01" name="Birth Date" id="bdate" required placeholder="DD-MM-YYYY"></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Gender</label></td>
+		          <td style=width:120px>
+		          	<select name="Gender" id="gender" required class="form-control">
+		          	    <option selected disabled hidden value=""></option>
+						<option value="Male">Male</option>
+						<option value="Female">Female</option>
+					</select>
+				  </td>
+	          </tr>
+	          <tr>
+			  <td colspan=2><h2 class="sub-header" id="contactinfo" style="font-size: 20px;">Contact Information</h2></td>	           
+	           </tr>
+	            <tr style=height:60px;>
+		          <td style=width:120px><label>Contact Address</label></td>
+		          <td style=width:120px colspan=2><textarea style="resize:none" name="Contact Address" id="address" class="form-control" maxlength="100" rows=2 placeholder="Address" cols=2></textarea></td>
+	            </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Contact Number</label></td>
+		          <td style=width:120px><input id="tel" name="Contact Number" type=tel maxlength="15" class="form-control" required></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Email</label></td>
+		          <td style=width:120px><input id="email" name="Email" maxlength="20" type=email class="form-control" required></td>		          
+	          </tr>	          
+	          <tr style=height:60px;>
+		          <td style=width:180px><label>Notes</label></td>
+		          <td style=width:120px colspan=2><textarea style="resize:none" name="Other Achievements" id="extra" class="form-control" maxlength="100" rows=4 placeholder="Add notes" cols=2></textarea></td>		          
+	          </tr>
+	          </table>
+	          <br/>
+	          <br/>
+	          <button style="max-width: 200px;" class="btn btn-lg btn-primary btn-block" type="submit">Add Contact</button>
+          </form>
+          <br/>
+          <br/>
+          <br/>
+        </div>
+      </div>
+    </div>
+	<div class="modalspinnerlight"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/bootbox.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+        <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }
+    });
+    
+    $(document).keypress(function(e) {
+    	  if(e.which == 38){
+    		  e.preventDefault();
+    	  }   	  
+    	});
+    
+    $("#form").submit(function() {
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: "/add_contact",
+            data: $("#form").serialize(),
+            error:  function(response) {			   
+				$("#form").find('input').val('');
+				$("#form").find('textarea').val('');
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Current session has expired. Kindly login again.");
+				window.setTimeout(function() {
+						$body.addClass("loading"); 
+					}, 1000);	
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);	
+            },
+            success:  function(response) {				
+				$("#form").find('input').val('');
+				$("#form").find('textarea').val('');
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Contact added successfully.");
+            }
+        });
+        return false;
+    });
+    
+    function validateForm(){
+    	console.log("submitting form");
+    }
+   </script>
+  </body>
+</html>

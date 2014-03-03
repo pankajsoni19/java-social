@@ -1,0 +1,235 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Edit Profile</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">OverView</label>
+		<ul class="nav nav-sidebar">
+			<li ><a href="/seller/home">Overview</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li><a href="/secure/view_profile">View Profile</a></li>			
+			<li class=active><a href="#">Edit Profile</a></li>
+			<li><a href="/secure/change_password">Change Password</a></li>
+			<li><a href="/secure/change_security">Change Security Question</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+          <h1 class="page-header" id="profile">Edit Profile</h1>
+		 <div style="float:left;margin-right:5%">
+	          <div style="border-style:solid;border-color:black;margin-bottom:10px;display:table;">
+	          	<img id="image" height=164 width=164 style="padding:5px;"/>
+	          </div>
+	          <input style="max-width:160px;margin-bottom:10px" type="file" class="form-control" id="imageupload" placeholder=" " autocomplete="off" required autofocus>
+	          <button style="max-width:160px;" class="btn btn-lg btn-primary btn-block" type="submit" onclick="uploadImage()">Upload Image</button>
+	      </div>		  
+		  <form style=margin-left:20px; role="form" class="form-signin" id="form" action="/secure/edit_profile/update" onsubmit="return validateForm();" method="post">
+	          <table>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Name</label></td>
+		          <td style=width:200px><input type=text class="form-control" name="fname" id="fname" required placeholder="First Name" autofocus/></td>
+				  <td style=width:200px><input style="margin-left:20%" type=text class="form-control" name="lname" id="lname" required placeholder="Last Name" autofocus/></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Contact Address</label></td>
+		          <td style=width:120px><textarea class="form-control"  name="caddr" id="caddr" type=text></textarea></td>
+	          </tr>
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Billing Address</label></td>
+		          <td style=width:120px><textarea class="form-control"  name="baddr" id="baddr" type=text></textarea></td>
+	          </tr>
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Email</label></td>
+		          <td style=width:120px><input class="form-control"  name="email_id" id="email_id" type=email></textarea></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Tel. No:</label></td>
+		          <td style=width:120px><input type=tel min=0 class="form-control" name="tel" id="tel" required></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:180px><label>Profile Description</label></td>
+		          <td style=width:120px colspan=2><textarea style="resize:none" name="note" id="note" class="form-control" maxlength="100" rows=4 placeholder="Add product description." cols=2></textarea></td>		          
+	          </tr>
+			  <tr>
+				<td style=width:180px><button style="max-width: 200px;margin-left:15%;margin-top:15%" class="btn btn-lg btn-primary btn-block" type="submit">Update Details</button></td>
+			  </tr>
+	          </table>
+          </form>			  
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/jquery.tablesorter.min.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	function validateForm(){
+    	console.log("submitting form");
+    };
+	
+	$("#form").submit(function() {		
+        $.ajax({
+            type: "post",
+            url: "/secure/edit_profile/update",
+            data: $("#form").serialize(),
+			error: function(response){
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Internal server error, kindly retry or contact support.");
+			},
+			success: function(response){
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Profile updated successfully.");			
+			}
+		});
+		return false;
+	});
+	
+	function uploadImage(){
+    	var fileInput = document.getElementById('imageupload');
+    	if(fileInput.files.length == 0) return;
+    	var file = fileInput.files[0];
+    	if(file.size > 102400){
+    		bootbox.alert("File size too large. File should be smaller than 100 Kbytes.", function() {});
+    		return;
+    	}
+    	var allowed = ["jpeg", "png"];
+    	var found = false;
+		var supported = "";
+    	allowed.forEach(function(extension) {
+    		supported += extension +", ";
+    	  if (file.type.match('image/'+extension)) {
+    	    found = true;
+    	  }
+    	});
+    	
+    	if(!found) {
+    		var alert = "Incorrect file type. File type supported are: " + supported;
+		  	$("#servermessage").css('visibility', 'visible');
+			$("#servermessage").show();			
+			$("#servermessage").html(alert);
+		  	return;
+    	}
+    	
+		var url = "/secure/edit_profile/update_photo";
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function(){
+   		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+   			{
+				var alert = "Image update successful";
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html(alert);
+   				document.getElementById('image').src = xmlhttp.responseText +"?" + new Date().getTime();
+   			}
+   		  if((xmlhttp.readyState==4 && xmlhttp.status == 412))
+   			{								
+   			  	var alert = "Error occurred while uploading file: " + file.name +". Kindly retry."
+   			  	$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html(alert);                  
+   			}
+   		 }
+   		xmlhttp.open("POST",url,true);
+   		xmlhttp.setRequestHeader("X_FILENAME", file.name);
+   		xmlhttp.setRequestHeader("X_FILESIZE", file.size);
+   		xmlhttp.send(file);
+    	
+   		$("#imageupload").replaceWith($("#imageupload").clone());    	
+    };
+	
+	$(document).ready(function() {
+		$.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/secure/view_profile/show",
+			success: function(response){
+				$.each(response, function (index, value) {
+					if(index == "note" || index == "caddr" || index == "baddr"){
+						value = value.replace(/&/g, '\r\n');
+						document.getElementById(index).value = value;
+					}else if(index == "image"){
+						document.getElementById(index).src = value + "?timestamp="+new Date().getTime();
+					}else{					
+						document.getElementById(index).value = value;
+					}				
+				});
+			}
+		});
+	});
+    </script>
+  </body>
+</html>

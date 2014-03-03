@@ -1,0 +1,181 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Add Product</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="#">Overview</a></li>
+			<li><a href="/seller/up_inventory">Update Inventory</a></li>
+			<li><a href="/seller/up_profile">Update Profile</a></li>
+			<li><a href="/v_profile">View Profile</a></li>
+			<li class="active"><a href="#">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>
+			<li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header" id="profile">New Product</h1>
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+		  <form style=margin-left:20px; role="form" class="form-signin" id="form">
+	          <table>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Product Name</label></td>
+		          <td style=width:200px><input type=text class="form-control" name="pname" id="pname" required autofocus></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Your Reference Id</label></td>
+		          <td style=width:120px><input class="form-control"  name="srid" id="srid" type=text></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Current Inventory Level</label></td>
+		          <td style=width:120px><input type=number min=0 class="form-control" name="cil" id="cil" required></td>
+	          </tr> 
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Inventory Cut-Off Level</label></td>
+		          <td style=width:120px><input type=number min=0 class="form-control" name="icoff" id="icoff" required></td>
+	          </tr>
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Sell Type</label></td>
+		          <td style=width:120px>
+		          	<select name="stype" id="stype" required class="form-control" onchange="updateForm()">
+		          	    <option selected disabled hidden value=""></option>
+						<option value="fp">Fixed Price</option>
+						<option value="bid">Bid</option>
+					</select>
+				  </td>
+				  <td style=width:120px><label style="margin-left:15%;">USD</label></td>
+				  <td style="width:120px;">
+					<input style="width:200px" type=number min=1 class="form-control" name="price" id="price" required>
+				  </td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:180px><label>Description</label></td>
+		          <td style=width:120px colspan=2><textarea style="resize:none" name="note" class="form-control" maxlength="100" rows=4 placeholder="Add product description." cols=2></textarea></td>		          
+	          </tr>
+	          </table>
+	          <br/>
+	          <br/>
+	          <button style="max-width: 200px;margin-left:15%" class="btn btn-lg btn-primary btn-block" type="submit">Add Product</button>
+          </form>
+		  
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	 $(document).keypress(function(e) {
+    	  if(e.which == 38){
+    		  e.preventDefault();
+    	  }   	  
+	});
+	
+	function updateForm(){
+		document.getElementById("price").value="";
+		if(document.getElementById("stype").value=="fp"){
+				document.getElementById("price").placeholder = "Enter selling price";
+		}else if(document.getElementById("stype").value=="bid"){
+			document.getElementById("price").placeholder="Enter minimum bid";
+		}
+	}
+	
+	$("#form").submit(function() {
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: "/seller/add_product",
+            data: $("#form").serialize(),
+			statusCode: {
+				403: function(){
+					$("#form").find('input').val('');
+					$("#form").find('textarea').val('');
+					$("#stype").val(''); 
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();			
+					$("#servermessage").html("Current session has expired. Kindly login again.");
+					window.setTimeout(function() {
+						$body.addClass("loading"); 
+					}, 1000);	
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);	
+				}
+			},
+            success:  function(response) {				
+				$("#form").find('input').val('');
+				$("#form").find('textarea').val('');
+				$("#stype").val(''); 
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Product added successfully.");				
+            }
+        });
+        return false;
+    });
+    
+    </script>
+  </body>
+</html>

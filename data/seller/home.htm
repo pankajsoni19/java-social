@@ -1,0 +1,631 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Profile Overview</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+	<link href="/css/table-sort.css" rel="stylesheet">
+	<link href="/css/footer.css" rel="stylesheet">
+	<link href="/css/jquery-ui.css" rel="stylesheet">
+	<link href="/css/jquery.ui.chatbox.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+	<div id=wrap>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">		
+          <ul class="nav navbar-nav navbar-right">
+			<li><a href="#" id="msgr_state" style="background-image: url('/img/offline.png');background-position: left center;background-repeat: no-repeat;padding-left: 25px;">Go Online</a></li>
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+		 <form class="navbar-form navbar-right" role="form">
+			<button type="button" id="search_address_book" class="btn btn-success">View Contacts</button>
+		 </form>
+		  <form class="navbar-form navbar-right" id="addto_address_book" role="form" style="margin-right: 0px;">
+            <div class="form-group">
+              <input type="text" id="ncnst" placeholder="Username" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Save Contact</button>
+          </form>
+		  <form class="navbar-form navbar-right" id="do_chat" role="form" style="display:none;margin-right: 0px;">
+            <div class="form-group">
+              <input type="text" id="uct" placeholder="User name" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Send PM</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">General</label>
+		<ul class="nav nav-sidebar">
+			<li class=active><a href="#">Overview</a></li>
+			<li><a href="/secure/community">Community</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li><a href="/secure/view_profile">View Profile</a></li>			
+			<li><a href="/secure/edit_profile">Edit Profile</a></li>
+			<li><a href="/secure/change_security">Update Security Options</a></li>
+			<li><a href="/secure/notification_settings">Notification Settings</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+          <h1 class="page-header" id="profile">Inventory Listing</h1>		  
+        </div>
+      </div>
+    </div>
+	</div>
+	<div id="footer">
+      <div class="container">
+        <p class="muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+      </div>
+    </div>
+	<div id="chat_div"></div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/jquery.tablesorter.min.js"></script>
+	<script src="/js/sha3.js"></script>
+	<script src="/js/jquery-ui.js"></script>
+	<script src="/js//jquery.ui.chatbox.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+        
+	function showComments(pname){
+		console.log(pname);
+		var query_url = "/seller/product/comments?product_name=" + pname;
+		$.ajax({
+			type: "get",
+			dataType: "json",
+			url: query_url,
+			statusCode: {
+				412: function(){
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();			
+					$("#servermessage").html("There are at present no comments for this product.");
+				},
+				403: function(){
+					var alert = "Session ended. Kindly login again";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 
+							window.setTimeout(function() {
+								window.location.href = '/login';
+							}, 30000);	
+				}
+			},
+			success: function(data) {
+				console.log(data);
+				var parsed = "<div class=table-responsive><table id=sortTable2 class=\"table table-striped table-hover\"><thead><tr><th>#</th><th class=yellow>Comment By</th>";
+				parsed +="<th class=blue>Comment</th><th class=green>Date</th><th class=orange>Rating</th>";
+				
+				if($("#msgr_state").text() == "Go Offline"){
+					parsed += "<th class=blue>Send PM</th>";
+				}
+				parsed += "</tr></thead><tbody>";
+				$.each(data, function (index, value) {
+				var pname;
+    			parsed +="<tr><td>"+index+"</td>";
+				var buyer_id = "";
+				$.each(value, function (inx, val) {
+					if(inx == "comment"){
+						val = val.replace(/&/g, '\r\n');
+						parsed +="<td>"+val+"</td>";
+					} else if(inx == "buyer_id"){
+						parsed +="<td><a href=# onclick=showProfile(\""+ val + "\") title=\"View User Profile\">"+val+"</a></td>";
+						buyer_id = val;
+					} else{
+						parsed +="<td>"+val+"</td>";
+					}
+				});
+				parsed += "<td><a href=# onclick=sendMessage(\""+ buyer_id + "\") title=\"Send Message\">Send Message</a></td>";
+				if($("#msgr_state").text() == "Go Offline"){
+					parsed += "<td><a href=# onclick='return sendPM(\""+ buyer_id + "\")' title=\"Send PM\">Send PM</a></td>"
+				}
+				parsed += "</tr>";
+    	    });
+    		parsed += "</tbody></table></div>";
+			bootbox.alert(parsed, function() {});
+			window.setTimeout(function() {
+				$("table#sortTable2").tablesorter({ sortList: [[1,0]] });
+				$( ".modal-dialog" ).animate({width:"80%"}, 'slow');
+			}, 500);
+			}
+		});		
+	};
+	
+	$("#msgr_state").click('click', function() {		
+		changeMsgrState();
+	});	
+	
+	$("#search_address_book").click(function(){
+		search_address_book();
+		console.log("gettingdata from server");
+		return false;
+	});
+	
+	function search_address_book(){
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "/secure/contacts/view",
+			statusCode: {
+				412: function(){
+					bootbox.alert("User does not exist.", function(){});
+				},
+				403: function(){
+					var alert = "Session ended. Kindly login again";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 
+							window.setTimeout(function() {
+								window.location.href = '/login';
+							}, 30000);	
+				}
+			},
+			success : function(response){
+				console.log(response);	
+				var parsed = "<div class=table-responsive><table id=sortTable3 class=\"table table-striped table-hover\"><thead><tr><th>#</th><th class=yellow>User Name</th></tr></thead><tbody>";
+				$.each(response, function(ix, val){
+					parsed +="<td>"+ix+"</td>";
+					parsed +="<td><a href=# onclick=showProfile(\""+ val + "\") title=\"View User Profile\">"+val+"</a></td>";
+					parsed += "<td><a href=# onclick=sendMessage(\""+ val + "\") title=\"Send Message\">Send Message</a></td>";
+					if($("#msgr_state").text() == "Go Offline"){
+						parsed += "<td><a href=# onclick='return sendPM(\""+ val + "\")' title=\"Send PM\">Send PM</a></td>"
+					}
+					parsed += "<td><a href=# onclick='return deleteContactNow(\""+ val + "\")' title=\"Delete Contact\">Delete Contact</a></td>";
+					parsed += "</tr>";
+				});
+				parsed += "</tbody></table></div>";
+				bootbox.alert(parsed, function() {});
+				window.setTimeout(function() {
+					$("table#sortTable3").tablesorter({ sortList: [[1,0]] });
+					$( ".modal-dialog" ).animate({width:"80%"}, 'slow');
+				}, 500);
+					
+			}
+		});
+	}
+	
+	$("#addto_address_book").submit(function(){
+		modify_address_book("/secure/contacts/new", document.getElementById("ncnst").value);
+		return false;
+	});
+	
+	function modify_address_book(goto_url, userid){
+			$.ajax({
+				type: "POST",
+				url: goto_url,
+				data: userid,
+				statusCode: {
+					412: function(){
+						bootbox.alert("User does not exist.", function(){});
+					},
+					403: function(){
+						var alert = "Session ended. Kindly login again";
+								$("#servermessage").css('visibility', 'visible');
+								$("#servermessage").show();			
+								$("#servermessage").html(alert); 
+								window.setTimeout(function() {
+									window.location.href = '/login';
+								}, 30000);	
+					}
+				},
+				success: function(){
+					bootbox.alert("Operation Successful.", function(){});
+				}
+			});
+	}
+	
+	$("#do_chat").submit(function() {
+		chat_with(document.getElementById("uct").value);
+		return false;
+	});
+	
+	var wsurl = null;
+	var ws = null;
+	var chatboxdata = new Array();
+	var user_name_padding = 2;
+	var msg_padding = 4;
+	var initmessage = "";
+	var sysname = "System";
+	var Domain = null;
+	var chatenabled = false;
+	
+	function pad(n, width, z) {
+	  z = z || '0';
+	  n = n + '';
+	  return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+	}
+	
+	function chat_with(user_id){
+		chat_with(user_id, null);
+	}
+	
+	function chat_with(user_id, msg){
+		
+		if(chatenabled && ws == null){
+			// this is fast rebind..
+			initiateChat();
+		}	
+		
+		if(chatboxdata == null || chatboxdata == undefined){
+			chatboxdata = new Array();
+		}
+		
+		var open = false;
+		$.each(chatboxdata, function(ix, val){
+			if(val == user_id){
+				open = true;
+				return;
+			}
+		});
+		
+		if(open){
+			return false;
+		}
+		var gap = 0;
+		if(chatboxdata.length > 0){
+			var gap = "#div-elem" + chatboxdata[0];
+			 gap = $(gap).width() + 4;
+			 gap = gap * chatboxdata.length;
+		}
+		
+		jQuery('<div/>', {
+				id: user_id
+			}).appendTo('#chat_div');
+		
+		var newelem = "#" + user_id;
+		$(newelem).chatbox({id : user_id,
+							  title : "talking with: " + user_id,
+							  user : user_id,
+							  offset: gap,
+							  width: 250,
+							  boxClosed: function (id){
+								console.log("session closed with : " + id);
+								chatboxdata.splice(chatboxdata.indexOf(id),1);
+								var oldelem = '#div-elem' + id;
+								$(oldelem).remove();
+							  },
+							  messageSent: function(id, user, msg){
+								this.boxManager.addMsg("self", msg);
+								//this.chatbox("option", "boxManager").addMsg(id, msg);
+								
+							   if(ws != null && msg != null && msg.length >0){							   
+									var padded = pad(user.length, user_name_padding, 0);
+									padded += user;
+									padded += pad(msg.length, msg_padding, 0);
+									padded += msg;
+									console.log("sending data: " + padded);
+									ws.send(padded);
+							   }
+							   if(ws == null || ws == undefined){
+									this.boxManager.addMsg("System", "You are currently offline.. Go online to send messages.");
+							   }
+						  }});
+	
+		var draggablelem = "#div-elem" + user_id;
+		$(function() {
+			$(draggablelem ).draggable();
+		  });
+		$( draggablelem ).css("position","absolute");  
+		var h = window.innerHeight - $( draggablelem).height();
+		$( draggablelem ).css({'top': h});
+		var multiple = chatboxdata.length + 1;
+		
+		h = window.innerWidth - ($( draggablelem ).width() * multiple);
+		$( draggablelem ).css({'left': h});		
+		
+		$( draggablelem ).draggable( "option", "containment", "parent" );
+		
+		
+		chatboxdata.push(user_id);
+		
+		window.setTimeout(function() {
+			$(newelem).chatbox("option", "boxManager").addMsg(sysname, initmessage);
+			if(msg != null){
+				$(newelem).chatbox("option", "boxManager").addMsg(user_id, msg);
+			}
+		}, 100);		
+		return false;
+	}
+	
+	function appendMessage(msgFrom, msg){	
+		console.log("parsed : " + msgFrom + " ,msg: " +  msg);
+		var found = false;
+		$.each(chatboxdata, function(ix, val){
+			if(val == msgFrom){
+				var elem = "#" + msgFrom;
+				console.log("selecting with: " + elem);
+				$(elem).chatbox("option", "boxManager").addMsg(msgFrom, msg);
+				found = true;
+			}		
+		});
+		if(!found){
+			console.log("open another chat box..and append to it");
+			chat_with(msgFrom, msg);
+		}
+	}
+	
+	function changeMsgrState(){
+		if($("#msgr_state").text() == "Go Online"){
+			initiateChat();
+			$("#msgr_state").text("Go Offline");
+			$("#msgr_state").css("background-image", "url(/img/online.png)");
+			$("#do_chat").show();
+			chatenabled = true;
+		}else{
+			chatenabled = false;
+			if(ws != null){
+				ws.close();
+			}else{
+				console.log("error ws is null");
+			}			
+			document.cookie = "WSSID=deleted; expires=Thu, 01 Jan 1970 00:00:00 GMT; Path=/secure/webchat/; Domain=192.168.1.42;"
+			$("#msgr_state").text("Go Online");
+			$("#msgr_state").css("background-image", "url(/img/offline.png)");
+			$("#do_chat").hide();
+		}
+		
+		return false;
+	}
+	
+	function initiateChat(){
+	
+		var WS = false;
+		if (window.WebSocket) WS = WebSocket;
+		if (!WS && window.MozWebSocket) WS = MozWebSocket;
+		if (!WS){
+			bootbox.alert("this browser does not support websockets, Chat feature will not work, To chat, use either chrome, firefox or safari", function(){});
+		}	
+		
+		if (location.protocol == "http:"){
+			wsurl = "ws://";
+		}else {
+			wsurl = "wss://";
+		}
+		wsurl += location.hostname + ":8443/secure/webchat/" ;
+		ws = new WS(wsurl);
+		
+		ws.onerror = function() {
+            var cinv = "WSSID=deleted; Expires=Thu, 01-Jan-1970 00:00:01 GMT; Path=/secure/webchat/; " + Domain + ";" ;
+			document.cookie = cinv;
+			ws.close();
+			ws = null;
+			changeMsgrState();
+        }		
+		ws.onopen = function() {
+                console.log("[WebSocket#onopen]\n"); 
+                }
+		ws.onmessage = function(e) {
+			var data = e.data;
+			console.log("[WebSocket#onmessage] Message: '" + e.data + "'\n");
+			if (data.indexOf('WSSID=') == 0){
+				data = data.split("&");
+				console.log("Setting cookie:" + data[0].trim());
+				document.cookie = data[0].trim();
+				Domain = data[0].trim().split(";")[3].trim();
+				sysname = data[1].trim();
+				initmessage = data[2].trim();				
+			}else if(data.indexOf('rebind') == 0){
+				this.close();
+			}else{
+				//parse message
+				var len1 = parseInt(data.slice(0,2));
+				len1 = len1 + 2;
+				var msgFrom = data.slice(2,len1);
+				var msgType = data.slice(len1,len1 + 3 );
+				len1 = len1 + 3;
+				if(msgType == "msg"){
+					var dataSize = parseInt(data.slice(len1,len1 + 4 ));
+					len1 = len1 + 4;
+					var msg = data.slice(len1,data.length );
+					appendMessage(msgFrom, msg);
+				}		
+			}
+		}
+		ws.onclose = function() {
+			var cinv = "WSSID=deleted; Expires=Thu, 01-Jan-1970 00:00:01 GMT; Path=\"/secure/webchat/\"; " + Domain + ";" ;
+			document.cookie = cinv;
+			ws = null;
+		}
+	}
+	
+	$( "#target" ).click(function() {
+	  alert( "Handler for .click() called." );
+	});
+	
+	function showProfile(buyer_id){
+		console.log(buyer_id);
+		bootbox.hideAll();
+		window.location = "/secure/community?viewprofile="+buyer_id;
+	}
+	
+	function sendMessage(buyer_id){
+		console.log(buyer_id);
+		bootbox.hideAll();	
+		window.location = "/secure/community?sendmsg="+buyer_id;
+	}
+	
+	function sendPM(buyer_id){
+		console.log(buyer_id);
+		bootbox.hideAll();	
+		chat_with(buyer_id);
+		return false;
+	}
+	
+	function deleteContactNow(contact_id){
+		console.log("delete contact " + contact_id),
+		bootbox.hideAll();
+		modify_address_book("/secure/contacts/delete",contact_id);
+		return false;
+	}
+	
+	function pswdupdate(){
+		$.ajax({
+            type: "get",
+            url: "/changepswd/token_verified"+location.search,
+			error: function(response){
+				bootbox.alert("Password reset link expired.", function(){});
+			},
+			success: function(response){
+				bootbox.prompt("Enter new password:",function(res) {
+						var result = res.toString();
+						
+						var passwfilter = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+						
+						if (result == null || result.trim() == "" || !passwfilter.test(result)){						
+							bootbox.alert("Password should have 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter.",function() {});
+							return false;
+						}
+						
+						var pwd = CryptoJS.SHA3(result).toString() ;
+						var xmlhttp = new XMLHttpRequest();
+						xmlhttp.onreadystatechange=function()
+						 {
+						  if (xmlhttp.readyState==4 && xmlhttp.status==202)
+							{
+								$("#servermessage").css('visibility', 'visible');
+								$("#servermessage").show();
+								$("#servermessage").html("Password reset successfully.");
+							}
+						  if((xmlhttp.readyState==4 && xmlhttp.status == 410))
+						    {					
+								$("#servermessage").css('visibility', 'visible');
+								$("#servermessage").show();			
+								$("#servermessage").html("Password recovery link has expired. Kindly generate a new request to reset password.");
+							}
+						 }
+						
+						var url="/changepswd/set_password"+location.search +"&pwd="+pwd;						
+						xmlhttp.open("POST",url,true);
+						xmlhttp.send();
+						return true;
+					});
+			}
+		});
+	}
+	
+	$(document).ready(function() {
+		if(location.search !=null && location.search != ""){
+			pswdupdate();
+		}	
+		if(document.cookie.indexOf("WSSID") > -1){
+			changeMsgrState();
+		}
+		loadData();
+	});
+ 
+	function loadData(){
+		$.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/seller/overview",
+			statusCode: {
+				412: function(){
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();			
+					$("#servermessage").html("Start by adding products to your profile.");				
+				},
+				403: function(){
+					var alert = "Session ended. Kindly login again";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 
+							window.setTimeout(function() {
+								window.location.href = '/login';
+							}, 30000);	
+				}
+			},
+            success: function(data) {
+				var parsed = "<div class=table-responsive><table id=sortTable class=\"table table-striped table-hover\"><thead><tr><th>#</th><th class=yellow>Product Name</th>";
+				parsed +="<th class=blue>Popularity</th><th class=green>Inventory Level</th><th class=orange>Price</th><th class=purple>Reference Id</th><th class=green>Sell Type</th>"
+				parsed += "<td><label>Comments</label></td></tr></thead><tbody>";
+    		$.each(data, function (index, value) {
+				var pname;
+    			parsed +="<tr><td>"+index+"</td>";
+				$.each(value, function (inx, val) {
+					if(inx == "stype" && val == "fp"){
+						parsed +="<td>Fixed Price</td>";
+					}else if(inx == "stype" && val == "bid"){
+						parsed +="<td>Bidding</td>";
+					}else if(inx == "pname"){
+						pname = val;
+						parsed +="<td>"+val+"</td>";
+					}else{
+						parsed +="<td>"+val+"</td>";
+					}
+				});
+				parsed += "<td><a href=# onclick=showComments(\""+pname+"\");>Show Comments</a></td></tr>";
+    	    });
+    		parsed += "</tbody></table></div>";
+    		$("#profile").after(parsed);
+			
+			window.setTimeout(function() {
+				$("table#sortTable").tablesorter({ sortList: [[1,0]] });
+			}, 1000);
+				
+            }
+        });
+	}
+ 
+    </script>
+  </body>
+</html>

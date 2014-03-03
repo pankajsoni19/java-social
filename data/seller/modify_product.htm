@@ -1,0 +1,336 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Update Product</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/seller/home">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">OverView</label>
+		<ul class="nav nav-sidebar">
+			<li><a href="#">Overview</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li><a href="/v_profile/">View Profile</a></li>			
+			<li><a href="/seller/up_profile">Update Profile</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li class="active"><a href="#">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods/">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h2 class="page-header" id="profile">Search Product to Modify</h2>
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+		  <form style=margin-left:20px; role="form" class="form-signin" id="search">
+			<table>
+	          <tr style=height:60px;>
+		          <td style=width:250px><input type=text class="form-control" name="pname" id="pname" placeholder="Enter Product Name" required autofocus></td>
+				  <td style=width:200px><button style="max-width: 200px;margin-left:25%" class="btn btn-lg btn-primary btn-block" type="submit">Get Product</button></td>
+	          </tr>
+			</table>  			
+		  </form>
+		 
+		<div style="visibility: hidden;" id="formupdate">
+		<br/><br/>
+		<h2 class="page-header" id="profile">Update Product</h2>
+		  <div style="float:left;margin-right:5%">
+	          <div style="border-style:solid;border-color:black;margin-bottom:10px;display:table;">
+	          	<img id="image" height=164 width=164 style="padding:5px;"/>
+	          </div>
+	          <input style="max-width:160px;margin-bottom:10px" type="file" class="form-control" id="imageupload" placeholder=" " autocomplete="off" required autofocus>
+	          <button style="max-width:160px;" class="btn btn-lg btn-primary btn-block" type="submit" onclick="uploadImage()">Upload Image</button>
+	      </div>
+		  <form style=margin-left:20px; role="form" class="form-signin" id="form">
+	          <table>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Product Name</label></td>
+		          <td style=width:200px><label name="pname2" id="pname2"></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Your Reference Id</label></td>
+		          <td style=width:120px><input class="form-control"  name="srid" id="srid" type=text></td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:120px><label>Current Inventory Level</label></td>
+		          <td style=width:120px><input type=number min=0 class="form-control" name="cil" id="cil" required></td>
+	          </tr>
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Inventory Cut-Off Level</label></td>
+		          <td style=width:120px><input type=number min=0 class="form-control" name="icoff" id="icoff" required></td>
+	          </tr>
+			  <tr style=height:60px;>
+		          <td style=width:120px><label>Sell Type</label></td>
+		          <td style=width:120px>
+		          	<select name="stype" id="stype" required class="form-control" onchange="updateForm()">
+		          	    <option selected disabled hidden value=""></option>
+						<option value="fp">Fixed Price</option>
+						<option value="bid">Bid</option>
+					</select>
+				  </td>
+				  <td style=width:120px><label style="margin-left:15%;">USD</label></td>
+				  <td style="width:120px;">
+					<input style="width:200px" type=number min=1 class="form-control" name="price" id="price" required>
+				  </td>
+	          </tr>
+	          <tr style=height:60px;>
+		          <td style=width:180px><label>Description</label></td>
+		          <td style=width:120px colspan=2><textarea style="resize:none" name="note" id="note" class="form-control" maxlength="100" rows=4 placeholder="Add product description." cols=2></textarea></td>		          
+	          </tr>
+	          </table>
+	          <br/>
+	          <br/>
+			  <table>
+				<tr style=height:60px;>
+	          <td style=width:180px><button style="max-width: 200px;margin-left:15%" class="btn btn-lg btn-primary btn-block" type="submit">Update Details</button></td>
+			  <td style=width:180px><button style="max-width: 200px;margin-left:50%" class="btn btn-lg btn-primary btn-block" onclick="deleteProduct()" type="button">Remove Product</button></td>
+			  	</tr>
+	          </table>
+
+          </form>	
+		</div>
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	$(document).keypress(function(e) {
+    	  if(e.which == 38){
+    		  e.preventDefault();
+    	  }   	  
+	});
+		
+	function updateForm(){
+		document.getElementById("price").value="";
+		if(document.getElementById("stype").value=="fp"){
+				document.getElementById("price").placeholder = "Enter selling price";
+		}else if(document.getElementById("stype").value=="bid"){
+			document.getElementById("price").placeholder="Enter minimum bid";
+		}
+	}
+	
+	function deleteProduct(){
+		var formdata = "pname="+$("#pname2").text();
+		$.ajax({
+				type: "get",
+				dataType: "",
+				url: "/seller/modify_product/delete",
+				data: formdata,
+				statusCode: {
+					200: function(){
+							var alert = "Product listing: " + $("#pname2").text() + " is deleted";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 
+							$("#search").find('input').val(''); 
+							$("#formupdate").find('input').val(''); 
+							$("#formupdate").find('textarea').val(''); 
+							$("#formupdate").find('img').attr("src",'');
+							$("#stype").val(''); 
+							$("#formupdate").css('visibility', 'hidden');
+							$('html').animate({scrollTop: -$("#search").offset().top},'slow');
+					},
+					500: function(){
+							var alert = "Internal server error, kindly retry or contact support.";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 					
+					}
+				}
+		});
+	}
+	 function uploadImage(){
+    	var fileInput = document.getElementById('imageupload');
+    	if(fileInput.files.length == 0) return;
+    	var file = fileInput.files[0];
+    	if(file.size > 102400){
+    		bootbox.alert("File size too large. File should be smaller than 100 Kbytes.", function() {});
+    		return;
+    	}
+    	var allowed = ["jpeg", "png"];
+    	var found = false;
+		var supported = "";
+    	allowed.forEach(function(extension) {
+    		supported += extension +", ";
+    	  if (file.type.match('image/'+extension)) {
+    	    found = true;
+    	  }
+    	});
+    	
+    	if(!found) {
+    		var alert = "Incorrect file type. File type supported are: " + supported;
+		  	$("#servermessage").css('visibility', 'visible');
+			$("#servermessage").show();			
+			$("#servermessage").html(alert);
+		  	return;
+    	}
+    	
+		var url = "/seller/modify_product/update_photo";
+		var xmlhttp=new XMLHttpRequest();
+		xmlhttp.onreadystatechange=function(){
+   		  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+   			{
+				var alert = "Image update successful";
+   				document.getElementById('image').src = xmlhttp.responseText +"?" + new Date().getTime();
+				bootbox.alert(alert, function(){});                
+   			}
+   		  if((xmlhttp.readyState==4 && xmlhttp.status == 412))
+   			{								
+   			  	var alert = "Error occurred while uploading file: " + file.name +". Kindly retry."
+   			  	bootbox.alert(alert, function(){});                
+   			}
+   		 }
+   		xmlhttp.open("POST",url,true);
+   		xmlhttp.setRequestHeader("X_FILENAME", file.name);
+   		xmlhttp.setRequestHeader("X_FILESIZE", file.size);
+		xmlhttp.setRequestHeader("X_PNAME", $("#pname2").text());
+   		xmlhttp.send(file);
+    	
+   		$("#imageupload").replaceWith($("#imageupload").clone());    	
+    };
+	
+	$("#form").submit(function() {
+        $.ajax({
+            type: "post",
+            dataType: "",
+            url: "/seller/modify_product",
+            data: $("#form").serialize(),
+			headers: { "X_PNAME": $("#pname2").text() },
+			statusCode: {
+				403: function(){
+					bootbox.alert("Current session has expired. Kindly login again.", function(){});
+					window.setTimeout(function() {
+						$body.addClass("loading"); 
+					}, 1000);	
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);	
+				}			
+			},
+            success:  function(response) {				
+				bootbox.alert("Product details updated.", function(){});				
+            }
+        });
+        return false;
+    });
+    
+	
+	$("#search").submit(function() {
+        $.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/seller/view_product",
+            data: $("#search").serialize(),
+			statusCode: {
+				403: function(){
+					window.setTimeout(function() {
+						$body.addClass("loading"); 
+					}, 1000);	
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);	
+				}
+			},
+            error:  function(response) {			   
+				$("#search").find('input').val('');
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Product by this name not found.");
+				$("#formupdate").css('visibility', 'hidden');
+				$("#formupdate").show();
+            },
+            success:  function(response) {
+				$("#formupdate").css('visibility', 'visible');
+				$("#formupdate").show();
+				$('html').animate({scrollTop: $("#image").offset().top},'slow');
+				$("#pname2").text(document.getElementById("pname").value); 
+				$.each(response, function (index, value) {
+					if(value != "null"){
+						if(index == "note"){							
+							value = value.replace(/&/g, '\r\n');
+							document.getElementById(index).value = value;
+						}else if(index == "image"){
+							document.getElementById(index).src = value + "?timestamp="+new Date().getTime();
+						}else{						
+							document.getElementById(index).value = value;
+						}
+					}				
+				});	
+            }
+        });
+        return false;
+    });
+    
+    function validateForm(){
+    	console.log("submitting form");
+    };
+    
+    </script>
+  </body>
+</html>

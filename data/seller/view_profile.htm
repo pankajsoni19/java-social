@@ -1,0 +1,208 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>View Profile</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">OverView</label>
+		<ul class="nav nav-sidebar">
+			<li ><a href="/seller/home">Overview</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li class=active><a href=#>View Profile</a></li>			
+			<li><a href="/secure/edit_profile">Edit Profile</a></li>
+			<li><a href="/secure/change_security">Update Security Options</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+          <h1 class="page-header" id="profile">Profile Details</h1>		  
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/jquery.tablesorter.min.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	$(document).ready(function() {
+		$.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/secure/view_profile/show",
+			success: function(response){
+			
+				var parsed2 = "<div style=\"float:left;margin-right:5%\"><div style=\"border-style:solid;border-color:black;margin-bottom:10px;display:table;\"><img id=\"image\" height=164 width=164 style=\"padding:5px;\"/></div><button style=\"max-width: 200px;margin: 10px 10px 10px 0px;\" class=\"btn btn-lg btn-primary btn-block\" onclick=\"viewprofile()\" type=\"button\">Show as general</button></div><div class=table-responsive><table><tbody>";
+				var parsed = "";
+				var name;
+				var image_path = "";
+				$.each(response, function (index, value) {		
+					if(index == "baddr"){
+						parsed += "<tr style=height:80px;><td style=width:250px><label>Billing Address</label></td>" ;
+						value = value.replace(/&/g, '\r\n');
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					}else if(index == "caddr"){
+						parsed += "<tr style=height:80px;><td style=width:250px><label>Contact Address</label></td>" ;
+						value = value.replace(/&/g, '\r\n');
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					}else if(index == "tel"){
+						parsed += "<tr style=height:80px;><td style=width:250px><label>Tel. no.</label></td>" ;
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					}else if(index == "note"){
+						parsed += "<tr style=height:80px;><td style=width:250px><label>Profile Description</label></td>" ;					
+						value = value.replace(/&/g, '\r\n');
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					} else if(index == "image"){
+						image_path = value;
+					} else if(index == "fname"){
+						name = "<tr style=height:80px;><td style=width:250px><label>Name</label></td>" ;
+						name += "<td style=width:250px><label>"+value;						
+					} else if (index == "lname"){
+						name += " " + value+"</label></td></tr>";
+					} else if(index == "email_id"){
+						parsed += "<tr style=height:80px;><td style=width:250px><label>Email</label></td>" ;					
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					} else{
+						parsed += "<tr style=height:80px;><td style=width:250px><label>" + index + "</label></td>" ;					
+						value = value.replace(/&/g, '\r\n');
+						parsed += "<td style=width:250px><label>"+value+"</label></td></tr>";
+					}
+				});
+				
+				parsed2 += name + parsed + "</tbody></table></div>";
+				$("#profile").after(parsed2);
+				window.setTimeout(function() {
+						document.getElementById("image").src = image_path + "?timestamp="+new Date().getTime();
+				}, 400);	
+			}
+		});
+	});
+	
+function viewprofile(userid){
+		var toSend = "/secure/view_profile/limited/show";
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: toSend,
+			statusCode: {
+				403: function(){
+						window.setTimeout(function() {window.location.href = '/login';}, 30000);				
+				},
+				412: function(){}
+			},
+			success	: function(response){
+				var parsed = "<div style=\"float:left;margin-right:5%\"><div style=\"border-style:solid;border-color:black;margin-bottom:10px;display:table;\"><img id=\"image_view\" height=164 width=164 style=\"padding:5px;\"/></div></div><div class=table-responsive><table><tbody>";
+				var name = "";
+				var image_path ="";
+				var mail_id ="";
+				var note = "";
+				$.each(response, function (ix, val) {
+					if(ix == "image"){
+						image_path = val;
+					}else if(ix == "fname"){
+						name = val + " "+ name;
+					}else if(ix == "lname"){
+						name = name + " " + val;
+					}else if(ix == "email_id"){
+						mail_id = val;
+					} else if(ix == "note"){
+						note = val.replace(/&/g, '\r\n');
+					}else{
+						console.log("extra recieved: " + inx);
+					}
+				});
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Name</label></td><td style=width:250px><label>"+name+"</label></td></tr>";
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Email</label></td><td style=width:250px><label>"+mail_id+"</label></td></tr>";
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Description</label></td><td style=width:250px><label>"+note+"</label></td></tr>";
+				parsed += "</tbody></table></div>";
+				bootbox.dialog({
+					message: parsed,
+					title: "Your public profile",
+					onEscape: function() {return true;},
+					buttons: {
+						success: { 
+							label: "Okay!",
+							className: "btn-success",
+							callback: function() {return true;}
+						}						
+					}
+				});
+				window.setTimeout(function() {
+					document.getElementById("image_view").src = image_path + "?timestamp="+new Date().getTime();
+				}, 400);
+			}
+		});
+	}
+    </script>
+  </body>
+</html>

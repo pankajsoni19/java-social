@@ -1,0 +1,117 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Profile Overview</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Candidate HomePage</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="#">Overview</a></li>
+			<li><a href="/buyer/add_contact">Add Contact</a></li>
+          </ul>
+          <ul class="nav nav-sidebar">
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header" id="profile">My Profile</h1>
+        </div>
+      </div>
+    </div>
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+    <script>
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+    
+	
+    
+	$(document).ready(function() {
+		$.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/list_contacts",
+            error:  function(response) {
+            	var alert = "Match Spec could not be updated.";
+			  	bootbox.alert(alert, function() {});
+			  	
+            },
+            success: function(data) {
+				var parsed = "<h2 class=\"sub-header\" style=\"font-size: 20px;\">Contacts List</h2>";
+				parsed +="<table><tr style=height:60px;><tr style=height:60px;><td style=width:40px><label>Ix.</label></td><td style=width:120px><label>Name</label></td>";
+				parsed +="<td style=width:120px><label>B'Day</label></td><td style=width:120px><label>Gender</label></td><td style=width:120px><label>Address</label></td>";
+				parsed +="<td style=width:120px><label>Tel No.</label></td><td style=width:120px><label>Email</label></td><td style=width:120px><label>Notes</label></td>"
+    		console.log(data);
+    		$.each(data, function (index, value) {
+    			parsed +="<tr style=height:60px;><td><label>"+index+"</label></td>";
+				console.log(index);
+				$.each(value, function (inx, val) {
+					console.log(inx + "  " + val);
+					parsed +="<td><label>"+val+"</label></td>";
+				});
+				parsed += "</tr>";
+    	    });
+    		parsed += "</table>";
+			console.log(parsed);
+    		$("#profile").after(parsed);
+            }
+        });
+    });
+    </script>
+  </body>
+</html>

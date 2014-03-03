@@ -1,0 +1,70 @@
+#/** Cassandra node **/
+casshost : 192.168.1.42
+cassport : 9042
+cassuname : pooja
+casspwd: pooja
+
+# Server Settings
+# identifier is uuid type 4 random 
+unique_identifier_for_this_server: d62f0f07-4b83-4d7c-9933-534ad5f6024e
+httpport : 80
+
+# domain for cookies..and other stuff
+domain: 192.168.1.42
+
+# connecting ip for other s2s nodes.
+public_ip: 192.168.1.42
+public_ip_port: 8120
+# inter node communication security
+# this is cert based authentication..authorization..is not present.
+# server side:
+is_secured: false
+in_cert_store : keystore.jks
+in_key_store_password: rootpass
+in_cert_key_password : rootpass
+
+#client side
+client_is_secured: false
+client_in_cert_store : keystore.jks
+client_in_key_store_password: rootpass
+client_in_cert_key_password : rootpass
+
+# 59.177.89.249
+
+maximum_backlog : 10
+image_storage_dir : C:/Users/krm11/Documents/GitHub/AppServer/OnlineApplication/storage
+# /*In bytes : 512 Kb*/
+max_image_size: 524288
+max_thread_pool_size : 128
+www_folder: C:/Users/krm11/Documents/GitHub/AppServer/OnlineApplication/data
+static_files: C:/Users/krm11/Documents/GitHub/AppServer/OnlineApplication
+
+# /*https settings*/
+https_server : false
+httpsport: 443
+cert_store : keystore.jks
+key_store_password: rootpass
+cert_key_password : rootpass
+
+# Web Socket Server for both ws and wss, depending upon http protocol chosen the same will be selected for ws
+websocketserverport : 8443
+
+# /*expirty time in milliseconds */
+cookie_expiry_time : 600000
+password_reset_link_expiry_time : 7200000
+registration_reset_link_expiry_time : 86400000
+
+# /*Email settings*/
+email_username : softwarejoint@gmail.com
+email_pwd : 
+email_from_addr : softwarejoint@gmail.com
+smtp_host: smtp.gmail.com
+smtp_port: 587
+email_attachment_storage_dir: C:/Users/krm11/Documents/GitHub/AppServer/OnlineApplication/email
+# /*In bytes : 512 Kb*/
+email_attachment_max_size: 524288
+# /* in seconds default 30 days */
+email_storage_expiry_time: 2592000 
+maintain_chat_history: true
+# In bytes 5 MB ** note chat msgs do not count in this..
+mail_box_size: 5242880

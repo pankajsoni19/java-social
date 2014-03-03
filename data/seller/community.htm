@@ -1,0 +1,1009 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+	<link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Profile Overview</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+	<link href="/css/table-sort.css" rel="stylesheet">
+	<link href="/css/footer.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+	<div id=wrap>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+		<div class="container-fluid">
+		  <div class="row">
+			<div class="col-sm-3 col-md-2 sidebar">
+				<label style="font-size: 20px;">OverView</label>
+				<ul class="nav nav-sidebar">
+					<li><a href="/seller/home">Overview</a></li>
+					<li class=active><a href="#">Community</a></li>
+				 </ul>
+				<label style="font-size: 20px;">Profile</label>
+				  <ul class="nav nav-sidebar">
+					<li><a href="/secure/view_profile">View Profile</a></li>			
+					<li><a href="/secure/edit_profile">Edit Profile</a></li>
+					<li><a href="/secure/change_security">Update Security Options</a></li>
+				  </ul>
+				  <label style="font-size: 20px;">Inventory</label>
+				  <ul class="nav nav-sidebar">
+					<li><a href="/seller/add_product">Add New Product</a></li>
+					<li><a href="/seller/modify_product">Modify Product</a></li>			
+				  </ul>
+				  <label style="font-size: 20px;">Finance</label>
+				  <ul class="nav nav-sidebar">
+				  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+				  </ul>
+			</div>
+			<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+			  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+			  <form class="navbar-form navbar-right" id="compose_message" role="form" style="margin-right: 0px;">
+				<div class="form-group">
+				  <input type="text" id="cmpuid" maxlength="21" placeholder="Username" required class="form-control">
+				</div>
+				<button type="submit" class="btn btn-success">Compose New Message</button>
+			</form>
+			  <h1 class="page-header" id="profile">MailBox</h1>
+				<div class="row">	
+						<div class="col-sm-3 col-md-2 table-responsive" style="padding:0px">
+								<table class="table table-hover">
+									<thead>
+									<tr>
+									<th class="yellow"><span>Folders</span></th>
+									</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<td class="green" id=inbox><span>Inbox</span></td>
+										</tr>
+										<tr>
+											<td class="blue" style="cursor:pointer" id=sent><span>Sent</span></td>
+										</tr>
+										<tr>
+											<td class="purple" style="cursor:pointer" id=archived><span>Archived</span></td>
+										</tr>
+										<tr>
+											<td class="orange" style="cursor:pointer" id=chat><span>Chat</span></td>
+										</tr>
+									</tbody>
+								</table>
+						</div>
+						<div class="col-sm-9 col-md-10 table-responsive" id="mbmsgs"></div>
+				</div>
+			</div>
+		  </div>
+		</div>
+	</div>
+	
+	<div id="footer">
+      <div class="container">
+        <p class="muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+      </div>
+    </div>
+
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/jquery.tablesorter.min.js"></script>
+	<script src="/js/sha3.js"></script>
+    <script>
+	var mailbox  = new Object();
+	var subjectShowLength = 20;
+	var typing = false;
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	$(document).ready(function() {		
+		if(location.search !=null && location.search != ""){
+			if(location.search.indexOf("viewprofile=") > 0){
+				var touser = location.search.split("=")[1];
+				viewprofile(touser);
+			}else if(location.search.indexOf("sendmsg=")>0){
+				var touser = location.search.split("=")[1];
+				composeMessage(touser);
+			}			
+		}
+		
+		mailbox.type="";
+		view_mailbox("inbox");		
+	}); 
+	
+	$("#compose_message").submit(function(){
+		composeMessage(document.getElementById("cmpuid").value);
+		return false;
+	});
+	
+	$("#inbox").click(function(){
+		view_mailbox("inbox");
+		return false;
+	});
+	$("#sent").click(function(){
+		view_mailbox("sent");
+		return false;
+	});
+	$("#archived").click(function(){
+		view_mailbox("archived");
+		return false;
+	});
+	$("#chat").click(function(){
+		view_mailbox("chat");
+		return false;
+	});
+	
+	var chatenabled = false;
+	var timerRef = null;
+	
+	function view_mailbox(type){
+		stopTimer();
+		clear_message();
+		if(mailbox.type == type){
+			return true;
+		}
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: "/secure/mail_box?type=show&folder=" + type,
+			statusCode: {
+				403: function(){
+						window.setTimeout(function() {window.location.href = '/login';}, 30000);				
+				},
+				412: function(){
+					show_message("Currently there are no mails in your :"+ type + " folder");
+					toggleMailbox(type);
+				}
+			},
+			success : function(response){
+				toggleMailbox(type);
+				mailbox.data = null;
+				parse_gen_response(response);
+				switch (type){
+					case "chat":
+						show_chat_dialog();
+					break;
+					default:
+						parse_view_response(type, response);
+					break;
+				}
+			}
+		});	
+	}
+	
+	//chat {"d62f0f07-4b83-4d7c-9933-534ad5f6024e":{"read":"false","msgtime":"1393863811914","mail_from":"tests","mail_to":"null"}}
+	function parse_gen_response(response){
+		var mailHolder = new Array();
+		var index = 0;
+		$.each(response, function(ix, res){
+			var mail = new Object();
+			mail.guid = ix;
+			mail.subid = "sub-"+mail.guid;
+			$.each(res, function(i,v){
+				switch(i){
+					case "read":
+						mail.read = v;
+					break;
+					case "msgtime":
+						mail.timestamp = v;
+					break;
+					case "mail_from": 
+					case "mail_to":						
+						if(v != "null"){
+							mail.to = v;
+						}
+					break;
+					default:
+						console.log("Sys got " + i + " : " + v);
+					break;
+				}
+			});
+			mailHolder[index] = mail;
+			index++;
+		});		
+		mailHolder.sort(function(a,b){ 
+			if(a.timestamp > b.timestamp){
+				return -1;
+			}
+			if(a.timestamp < b.timestamp){
+				return 1;
+			}
+			return 1;
+		});
+		mailbox.data = mailHolder;	
+	}
+	
+	function show_chat_dialog(){
+		var id = "divelem"+mailbox.type;
+		var parsed = "<table id=\"" + id;
+		parsed += "\"class=\"table table-striped table-hover\"><thead><tr><th class=green>With</th><th class=blue>Date</th></tr></thead><tbody>";
+		$.each(mailbox.data,function(i, mail){
+			var tempid = createGuid();
+			parsed += "<tr id=" + tempid + " ><td><img style=\"background: url(/img/ui-icons_2e83ff_256x240.png); margin-right: 2px; height: 25px; width: 24px; background-size: 1800%; background-position-x: -165px; background-position-y: -85px;\">";
+			parsed += "<a href=# onclick='return viewprofile(\""+ mail.to + "\")' title=\"View Profile\">" + mail.to + "</a></td>";
+			var date = new Date(Number(mail.timestamp));
+			parsed += "<td>" + date.toLocaleString() + "</td>";
+		    parsed += "<td><a id=" + mail.subid + " href=# onclick='return viewChatLog(\"" + tempid + "\", \"" + mail.guid + "\")' title=\"View Conversation\"";
+			if(mail.read == "false"){
+				parsed += " style=font-weight:bold>View Conversation</a></td>";
+			}else{
+				parsed += " >View Conversation</a></td>";
+			}
+			parsed += "<td><a href=# onclick='return modify_address_book(\"/secure/contacts/new\", \""+ mail.to + "\")' title=\"Add to Contacts\">Add to Contact</a></td>"
+			parsed += "</tr>";
+		});
+		
+		parsed += "</tbody></table>";
+		$("#mbmsgs").html(parsed);
+		doTableSort(id);
+	
+	}
+	
+	function parse_view_response(type, response){
+		var mailHolder = new Array();
+		var id = "divelem"+mailbox.type;
+		var parsed = "<table id=\"" + id;
+		parsed += "\"class=\"table table-striped table-hover\"><thead><tr><th class=green>";
+		if(type == "inbox"){
+			parsed += "From";
+		}else if(type == "sent"){
+			parsed += "To";
+		}else{
+			parsed += "With";
+		}
+		
+		parsed += "</th><td class=yellow><label>Subject<label></td><th class=blue>Date</th><td style=\"width:40px; background: url(/img/ui-icons_2e83ff_256x240.png) -120px; background-size: 1600%; background-position-x: 0px;background-position-y: 359px;\"></td>";
+		parsed += "</tr></thead><tbody>";
+		$.each(response, function(ix, res){
+			var mail = new Object();
+			parsed += "<tr";
+			$.each(res, function(key,value){						
+				console.log(key + " " + value);						
+				if(key=="guid"){
+					mail.guid = value;
+					mail.tempid = createGuid();
+					parsed += " id=\""+ mail.tempid + "\">";
+				} else if(key == "read"){
+					if(value == "true"){
+						mail.read = true;
+					}else{
+						mail.read = false;
+					}												
+				} else if(key == "mail_to" && value !="null"){
+					console.log(key + " " + value) ;
+					mail.to = value;
+					parsed +="<td>";
+					if(type == "chat" || type == "archived"){
+						parsed += "<img style=\"background: url(/img/ui-icons_2e83ff_256x240.png); margin-right: 2px; height: 25px; width: 24px; background-size: 1800%; background-position-x: -165px; background-position-y: -85px;\">";
+					}
+					parsed +="<a href=# onclick='return viewprofile(\""+ mail.to + "\")' title=\"View Profile\">" + value + "</a></td>";
+				}else if(key == "mail_from" && value !="null"){
+					console.log(key + " " + value) ;
+					mail.to = value;
+					parsed +="<td>";							
+					if(type == "chat" || type == "archived"){
+						parsed += "<img style=\"background: url(/img/ui-icons_2e83ff_256x240.png); margin-right: 2px; height: 25px; width: 24px; background-size: 1800%; background-position-x: -55px; background-position-y: -85px;\">";
+					}
+					parsed +="<a href=# onclick='return viewprofile(\""+ mail.to + "\")' title=\"View Profile\">" + value + "</a></td>";
+				}else if(key == "has_attachments"){							
+					if(value=="true"){
+						parsed += "<td style=\"width:40px; background: url(/img/ui-icons_2e83ff_256x240.png) -120px; background-size: 1600%; background-position-x: -160px;background-position-y: 235px;\"></td>";
+					}else{
+						parsed += "<td style=\"width:40px; background: url(/img/ui-icons_2e83ff_256x240.png) -120px; background-size: 1600%; background-position-x: -160px;background-position-y: 275px;\"></td>";
+					}							
+				}else if(key=="msgtime"){
+					var date = new Date(Number(value));
+					parsed += "<td>" + date.toLocaleString() + "</td>";
+					mail.timestamp = value;
+				} else if(key == "subject"){
+					var subid = "sub-"+mail.guid;
+					
+					var valueSub = value;
+					if(valueSub.length >subjectShowLength){
+						valueSub = valueSub.substring(0, subjectShowLength) + "..";
+					}
+					
+					parsed += "<td><a id=" + subid + " href=# onclick='return viewConversation(\"" + mail.tempid + "\", \"" + mail.guid + "\")' title=\"View Conversation\"";
+					if(mailbox.type =="inbox" && !mail.read){
+						parsed += " style=font-weight:bold>" + valueSub;
+					}else{
+						parsed += " >" + valueSub;
+					}
+					parsed += "</a></td>";
+					if(value.indexOf("Re:") == 0){
+						mail.rs = value;
+					}else{ 
+						mail.rs = "Re: " + value;
+					}
+				}else{
+					//parsed += "<td>" + value + "</td>";
+				}
+			});
+			parsed += "<td><a href=# onclick='return deleteMail(\""+ mail.tempid + "\", \"" + mail.guid + "\", \""+ mail.timestamp + "\")' title=\"Delete\">Delete</a></td>";
+			if(type != "archived"){
+				parsed += "<td><a href=# onclick='return archive(\""+ mail.tempid + "\", \"" + mail.guid + "\", \""+ mail.timestamp + "\")' title=\"Archive\">Archive</a></td>";
+			}
+			if(chatenabled){
+				parsed += "<td><a href=# onclick='return sendPM(\""+ mail.to + "\")' title=\"Send PM\">Send PM</a></td>";
+			}
+			if(type !="chat"){
+				parsed += "<td><a href=# onclick='return composeMessage(\""+ mail.to + "\" , \"" + mail.guid + "\" , \""+ mail.rs +"\")' title=\"Reply Back\">Reply Back</a></td>";
+			}
+			if(type == "inbox"){
+				parsed += "<td><button class=btn-success onclick='return toggle_read(\""+ mail.guid + "\" , \""+ mail.timestamp +"\")' title=\"Toggle Read\">Toggle Read</button></td>"
+			}
+			parsed += "<td><a href=# onclick='return modify_address_book(\"/secure/contacts/new\", \""+ mail.to + "\")' title=\"Add to Contacts\">Add to Contact</a></td>"
+			parsed += "</tr>";
+			//mailHolder[ix] = mail;
+			//mailbox.data = mailHolder;
+		});
+		parsed += "</tbody></table>";
+		$("#mbmsgs").html(parsed);
+		doTableSort(id);
+	}
+	
+	function doTableSort(id){
+		window.setTimeout(function() {
+			var table_id = "table#" + id;
+			$(table_id).tablesorter({ sortList: [[0,0]] });
+		}, 400);
+	}
+	
+	function stopTimer()
+	{
+		if(timerRef !=null){
+			clearTimeout(timerRef);
+		}
+	}
+	
+	function viewChatLog(rowid, guid){
+		console.log("rowid: " + rowid);
+		var goto_url = "/secure/mail_box?type=view_chat_log&guid="+guid;
+		$.ajax({
+				type: "GET",
+				dataType: "json",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+						show_message("Session ended. Kindly login again");
+						window.setTimeout(function() {
+							window.location.href = '/login';
+						}, 30000);	
+					}
+				},
+				success: function(response){
+					var parsed = "";
+					var subid = "#sub-" + guid;
+					if ($(subid).css("font-weight") == "bold"){
+						$(subid).css({"font-weight": "400" });
+					}
+					$.each(response, function(ix, val){
+						var popid = "pop" + ix;
+						parsed += "<div class=row id="
+						parsed += popid;
+						parsed += " ><div class=\"col-sm-12 col-md-12\" style=margin-bottom:10px>";
+						var date = new Date(Number(ix));
+						var inner = "";
+						var folder = "chat";
+						$.each(val, function(i,v){
+							switch(i){
+								case "mail_to":
+									inner += "<label>To:"+ v +"</label>";
+									inner += "<label style=\"float:right\">" + date.toLocaleString() + "</label><br/>";
+									break;
+								case "mail_from":
+									inner += "<label>From:"+ v +"</label>";
+									inner += "<label style=\"float:right\">" + date.toLocaleString() + "</label><br/>";
+									break;
+								case "message":
+									inner += "<br/>" + v;
+								break;
+								default:
+								console.log("got something extra : " + v);
+								break;								
+							}
+						});
+						
+						inner += "<br/><br/>";						
+						inner += "<button style=margin-right:20px; onclick='return deleteTp(\"" + rowid + "\", \"" + popid + "\", \"" +  folder + "\", \"" + guid + "\", \""+ ix + "\")' type=button class=\"btn btn-success\">Delete</button>";
+						parsed = parsed + inner + "</div></div>";
+					});
+					bootbox.alert(parsed, function(){});
+				
+				}
+			});		
+		return false;
+	}
+	
+	function viewConversation(rowid, guid){
+		console.log("rowid: " + rowid);
+		var goto_url = "/secure/mail_box?type=view_conversation&guid="+guid;
+		$.ajax({
+				type: "GET",
+				dataType: "json",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+						show_message("Session ended. Kindly login again");
+						window.setTimeout(function() {
+							window.location.href = '/login';
+						}, 30000);	
+					}
+				},
+				success: function(response){
+					var parsed = "";
+					$.each(response, function(ix, val){
+						var popid = "pop" + ix;
+						parsed += "<div class=row id="
+						parsed += popid;
+						parsed += " ><div class=\"col-sm-12 col-md-12\">";
+						var date = new Date(Number(ix));
+						var inner = "";
+						var subject;
+						var folder;
+						var ats;
+						$.each(val, function(i,v){							
+							if(i == "mail_to"){
+								inner += "<label>To:"+ v +"</label>";
+								inner += "<label style=\"float:right\">" + date.toLocaleString() + "</label><br/>";
+							}else if(i == "mail_from"){
+								inner += "<label>From:"+ v +"</label>";
+								inner += "<label style=\"float:right\">" + date.toLocaleString() + "</label><br/>";								
+							} else if(i== "folder"){
+								folder = v;
+							} else if(i == "subject"){
+								subject = "<h4 class=page-header>" + v + "</h4>";
+							} else if(i=="ats"){
+								ats = "<h6 class=page-header>Attachments</h6><ul class=\"nav\">"
+								$.each(v, function(fname, fpath){
+									ats += "<li><a href=\"/email/"+ fpath + "\" >" + fname +"</a></li>";
+								});
+								ats += "</ul>";
+									
+							} else{
+								inner += "<br/>" + v;
+							}
+						});
+						
+						inner += "<br/>" + ats;
+						inner += "<br/><br/>";
+						if(folder == "inbox"){
+							inner += "<button style=margin-right:20px; onclick='return toggle_read(\"" + guid + "\", \""+ ix + "\")' type=button class=\"btn btn-success\">Toggle read</button>";
+						}
+						inner += "<button style=margin-right:20px; onclick='return deleteTp(\"" + rowid + "\", \"" + popid + "\", \"" +  folder + "\", \"" + guid + "\", \""+ ix + "\")' type=button class=\"btn btn-success\">Delete</button>";
+						if(folder != "archived"){
+							arid = popid + "arid";
+							inner += "<button id="+ arid +" onclick='return archiveTp(\"" + arid + "\", \"" + folder + "\", \""+ guid + "\", \""+ ix + "\")' type=button class=\"btn btn-success\">Archive</button>";
+						}
+						parsed = parsed + subject + inner + "</div></div>";
+					});
+					bootbox.alert(parsed, function(){});
+				}
+			});		
+		return false;
+	}
+	
+	function toggle_read(gidr, tsl){
+		var goto_url = "/secure/mail_box?type=toggle_read&guid=" + gidr + "&ts=" + tsl;	
+		$.ajax({
+			type: "GET",
+			async: false,
+			url: goto_url,
+			statusCode: {
+				403: function(){
+					show_message("Session ended. Kindly login again");
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);	
+				}
+			},
+			success: function(){
+				subid = "#sub-" + gidr;
+				if ($(subid).css("font-weight") == "bold"){
+					$(subid).css({"font-weight": "400" });
+				}else{
+					$(subid).css({"font-weight": "bold" });
+				}
+				
+				bootbox.alert("read status updated", function(){});
+			}
+		});	
+		return false;
+	}
+	
+	function deleteTp(rowid, popid , folder, guid, ts){
+		var goto_url = "/secure/mail_box?type=delete&folder=" + folder +"&guid=" + guid + "&ts="+ts;
+		console.log(goto_url);
+		$.ajax({
+				type: "GET",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+								show_message("Session ended. Kindly login again");
+								window.setTimeout(function() {
+									window.location.href = '/login';
+								}, 30000);	
+					}
+				},
+				success: function(){
+					$("#"+popid).remove();					
+					var inner = $(".bootbox-body").html();
+					if(inner == "" || inner.length == 0){
+						bootbox.hideAll();
+						triggerUpdate(rowid);
+					}
+				}
+			});	
+		return false;
+	}
+	
+	function archiveTp(arid , fldr, gidr, tsl){
+		var goto_url = "/secure/mail_box?type=archived&folder=" + fldr +"&guid=" + gidr + "&ts=" + tsl;
+		$.ajax({
+				type: "GET",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+						show_message("Session ended. Kindly login again");
+						window.setTimeout(function() {
+							window.location.href = '/login';
+						}, 30000);	
+					}
+				},
+				success: function(){
+					$("#"+arid).remove();
+				}
+			});	
+		return false;
+	}
+	
+	function archive(rowid, guid, ts){
+		var goto_url = "/secure/mail_box?type=archived&folder=" + mailbox.type +"&guid=" + guid + "&ts=" + ts;
+		$.ajax({
+				type: "GET",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+						show_message("Session ended. Kindly login again");
+						window.setTimeout(function() {
+							window.location.href = '/login';
+						}, 30000);	
+					}
+				},
+				success: function(){
+					show_message("message archived.");
+					triggerUpdate(rowid);
+				}
+			});	
+	}
+	
+	function deleteMail(rowid, guid, ts){
+		var goto_url = "/secure/mail_box?type=delete&folder=" + mailbox.type +"&guid=" + guid + "&ts="+ts;
+		console.log(goto_url);
+		$.ajax({
+				type: "GET",
+				url: goto_url,
+				statusCode: {
+					403: function(){
+								show_message("Session ended. Kindly login again");
+								window.setTimeout(function() {
+									window.location.href = '/login';
+								}, 30000);	
+					}
+				},
+				success: function(){
+					show_message("message deleted");
+					triggerUpdate(rowid);
+					//doTableSort("divelem"+mailbox.type);
+				}
+			});				
+	}
+	
+	function triggerUpdate(rowid){
+		var t = "#" + rowid;
+		$(t).remove();
+		var k = "#divelem" + mailbox.type;
+		$(k).trigger("update");	
+	}
+	
+	function show_message(alert){
+		$("#servermessage").css('visibility', 'visible');
+		$("#servermessage").show();			
+		$("#servermessage").html(alert);
+		timerRef = setTimeout(function(){$("#servermessage").css('visibility', 'hidden');},5000);	
+	}
+	
+	function clear_message(){
+		$("#servermessage").hide();	
+	}
+	function modify_address_book(goto_url, userid){
+			$.ajax({
+				type: "POST",
+				url: goto_url,
+				data: userid,
+				statusCode: {
+					412: function(){
+						bootbox.alert("User does not exist.", function(){});
+					},
+					403: function(){
+						var alert = "Session ended. Kindly login again";
+								$("#servermessage").css('visibility', 'visible');
+								$("#servermessage").show();			
+								$("#servermessage").html(alert); 
+								window.setTimeout(function() {
+									window.location.href = '/login';
+								}, 30000);	
+					}
+				},
+				success: function(){
+					bootbox.alert("Operation Successful.", function(){});
+				}
+			});
+	}
+	
+	function toggleMailbox(type){
+		if(type != ""){
+			var id = "#"+mailbox.type;
+			$( id).toggleClass( "active");
+			$( id).css("cursor","pointer");
+			id = "#divelem"+mailbox.type;
+			$(id).remove();
+		}		
+		mailbox.type = type;
+		id = "#" + mailbox.type;
+		$( id).toggleClass( "active");
+		$( id).css("cursor","auto");
+	}
+	
+	function viewprofile(userid){
+		var toSend = "/secure/view_profile/limited/show?uid="+userid;
+		$.ajax({
+			type: "GET",
+			dataType: "json",
+			url: toSend,
+			statusCode: {
+				403: function(){
+						window.setTimeout(function() {window.location.href = '/login';}, 30000);				
+				},
+				412: function(){}
+			},
+			success	: function(response){
+				var parsed = "<div style=\"float:left;margin-right:5%\"><div style=\"border-style:solid;border-color:black;margin-bottom:10px;display:table;\"><img id=\"image_view\" height=164 width=164 style=\"padding:5px;\"/></div></div><div class=table-responsive><table><tbody>";
+				var name = "";
+				var image_path ="";
+				var mail_id ="";
+				var note = "";
+				$.each(response, function (ix, val) {
+					if(ix == "image"){
+						image_path = val;
+					}else if(ix == "fname"){
+						name = val + " "+ name;
+					}else if(ix == "lname"){
+						name = name + " " + val;
+					}else if(ix == "email_id"){
+						mail_id = val;
+					} else if(ix == "note"){
+						note = val.replace(/&/g, '\r\n');
+					}else{
+						console.log("extra recieved: " + inx);
+					}
+				});
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Name</label></td><td style=width:250px><label>"+name+"</label></td></tr>";
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Email</label></td><td style=width:250px><label>"+mail_id+"</label></td></tr>";
+				parsed += "<tr style=height:80px;><td style=width:250px><label>Description</label></td><td style=width:250px><label>"+note+"</label></td></tr>";
+				parsed += "</tbody></table></div>";
+				bootbox.dialog({
+					message: parsed,
+					title: userid + "'s profile",
+					onEscape: function() {return true;},
+					buttons: {
+						success: { 
+							label: "Okay!",
+							className: "btn-success",
+							callback: function() {return true;}
+						}						
+					}
+				});
+				window.setTimeout(function() {
+					document.getElementById("image_view").src = image_path + "?timestamp="+new Date().getTime();
+				}, 400);
+			}
+		});
+		
+		return false;
+	}
+	
+	function sendMessage(toUser, Subject, Msg){
+		var toSend = "user_id=" + toUser + "&subject="+Subject + "&msg=" + Msg;
+		$.ajax({
+				type: "post",
+				dataType: "",
+				data: toSend,
+				url: "/secure/send_messege",
+				statusCode: {
+					200: function(){
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html("Message sent to:" + toUser); 
+					},
+					403: function(){
+							var alert = "Session ended. Kindly login again";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 
+							window.setTimeout(function() {
+								window.location.href = '/login';
+							}, 30000);						
+					},
+					500: function(){
+							var alert = "Internal server error, kindly retry or contact support.";
+							$("#servermessage").css('visibility', 'visible');
+							$("#servermessage").show();			
+							$("#servermessage").html(alert); 					
+					}
+				},
+			});
+	}
+	
+	//$(document).keypress(function(e) {    	  if(e.which == 38){    		  e.preventDefault();    	  }   	  	});
+	
+	function createGuid()
+	{
+		return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+			var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);
+			return v.toString(16);
+		});
+	}
+
+	function uploadFiles(guid, files, keyTag){
+		console.log("mail tag: " + keyTag);
+		var ap = true;
+		var toReturn = false;
+		for (var i=0; i<files.length; i++) {
+			if( i == (files.length - 1)){
+				ap = false;
+			}
+			var file = files[i];
+			var url = "/secure/sendmail/mail/attachment";
+			var xmlhttp=new XMLHttpRequest();
+			xmlhttp.onreadystatechange=function(){
+			  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+				{
+					if(!ap){
+						toReturn = true;
+					}
+				}
+			  if((xmlhttp.readyState==4 && xmlhttp.status == 412))
+				{								
+					
+				}
+			 }
+			var xcont = "guid=" + guid + "&ap=" + ap+"&index="+i;
+			xmlhttp.open("POST",url,true);
+			xmlhttp.setRequestHeader("X_FILENAME", file.name);
+			xmlhttp.setRequestHeader("X_FILESIZE", file.size);
+			xmlhttp.setRequestHeader("X_CONT", xcont);
+			xmlhttp.setRequestHeader("TAG", keyTag);
+			xmlhttp.send(file);		
+		}		
+		return toReturn;
+	}
+	
+	window.onbeforeunload = function (e) {
+	console.log(typing);
+	if(typing){	
+	  var message = "Do you want to leave now. Message will not be saved.",
+		  e = e || window.event;
+		  // For IE and Firefox
+		  if (e) {
+			e.returnValue = message;
+		  }
+	  // For Safari
+	  return message;
+	  }
+	};
+	
+	
+	function composeMessage(touser){
+		composeMessage(touser, null, null);
+	}
+	
+	function composeMessage(touser, chainID, subject){
+		typing = true;
+	    var display = "<div><form style=margin-left:20px; role=\"form\" class=\"form-signin\" id=\"form\"><span style=\"margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;\" id=\"servermessage2\"></span><label style=\"margin-bottom:5%\">To: ";
+		display +=touser
+		if(subject != null && subject.length > 0){
+			display += "</label><label style=\"margin-bottom:5%\">"+ subject  +"</label>";
+		}else{
+			subject = null;
+			display += "</label><input type=text style=\"margin-bottom:5%\" class=\"form-control\" name=\"subject\" id=\"subject\" required placeholder=\"Enter subject\" autofocus/>";
+		}		
+		display += "<textarea class=\"form-control\" name=\"msg\" id=\"msg\" rows=6 style=\"margin-bottom:5%\" required placeholder=\"Compose Message\"autofocus/><input class=\"form-control\" type=file multiple=multiple placeholder=\"Attach files to send\" id=\"attachments\"></div>";
+		bootbox.dialog({
+		  message: display,
+		  title: "Compose Message",
+		  buttons: {
+			success: {
+			  label: "Send",
+			  className: "btn-success",
+			  callback: function(response) {				
+				$("#servermessage2").html("");
+				$("#servermessage2").css('visibility', 'hidden');
+				var fileInput = document.getElementById("attachments");
+				var ap = false;
+								
+				if(fileInput.files.length > 0){
+				
+					if(fileInput.files.length > 5){
+						$("#servermessage2").css('visibility', 'visible');
+						$("#servermessage2").show();
+						$("#servermessage2").html("Maximum 5 attachments allowed.");
+						return false;					
+					}
+				
+					var allowed = [".doc", ".docx", ".pdf"];
+					var found = false;
+					$.each(fileInput.files, function (index, file) {
+					
+						var fileext = file.name.substring(file.name.lastIndexOf('.'));
+						console.log(file.name + "  " + fileext);
+						
+						allowed.forEach(function(extension) {
+							if(extension.indexOf(fileext) == 0){
+								found = true;
+							}
+						});
+						console.log("extension validaeed" + found);
+						if(!found){
+							$("#servermessage2").css('visibility', 'visible');
+							$("#servermessage2").show();
+							$("#servermessage2").html("Allowed files are only doc, docs and pdf");
+							return;
+						}
+						if(file.size > 102400){
+							$("#servermessage2").css('visibility', 'visible');
+							$("#servermessage2").show();
+							$("#servermessage2").html("Max file size allowed is 100kb.");
+							return;
+						}
+						
+					});
+					
+					if(!found){
+						return false;
+					}	
+					ap = true;			
+				}				
+				
+				if (subject == null){
+					subject = document.getElementById("subject").value;
+				}
+				var msg = document.getElementById("msg").value;
+				var guid = null;
+				if(chainID == null){				
+					guid = createGuid();
+				}else{
+					guid = chainID;
+				}
+			
+				console.log(subject);
+				console.log(msg);
+				var resultbool = sendMailText(msg, subject, guid, touser, ap, fileInput.files);
+				console.log("resultbool" + resultbool);
+				typing = false;
+				return resultbool
+			  }
+			},
+			main: {
+			  label: "Cancel",
+			  className: "btn-primary",
+			  callback: function() {
+				console.log("cancelled");
+				typing = false;
+			  }
+			}
+		  }
+		});		
+		return false;
+	}
+	
+	function sendMailText(msg, subject, guid, touser, ap, files){
+		var toReturn = false;
+		$.ajax({
+			url: '/secure/sendmail/mail',
+			type: 'POST',
+			data: msg,
+			async: false,
+			headers: {"subject": subject, "guid" : guid, "to" : touser, "ap" : ap},	
+			statusCode: {
+				200: function(response){
+					console.log("mail sent now..send files." + response);
+					
+					if(ap){
+						toReturn = uploadFiles(guid, files, response);
+						if(!toReturn){
+							$("#servermessage2").css('visibility', 'visible');
+							$("#servermessage2").show();
+							$("#servermessage2").html("Error adding attachments, kindly retry or contact support.");									
+						}
+					}
+					
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();
+					$("#servermessage").html("Mail Sent to user: " + touser);	
+					toReturn = true;
+				},
+				409: function(){
+					$("#servermessage2").css('visibility', 'visible');
+					$("#servermessage2").show();
+					$("#servermessage2").html("MailBox full.. delete something...");
+				},
+				412: function(){
+					$("#servermessage2").css('visibility', 'visible');
+					$("#servermessage2").show();
+					$("#servermessage2").html(touser + " : does not exist in db.");
+				},
+				403: function(){
+					$("#servermessage2").css('visibility', 'visible');
+					$("#servermessage2").show();
+					$("#servermessage2").html("Session expired, kindly login again.");
+				}
+			},
+			error: function(){
+				$("#servermessage2").css('visibility', 'visible');
+				$("#servermessage2").show();
+				$("#servermessage2").html("Error adding attachments, kindly retry or contact support.");
+			}
+		});
+		return toReturn;
+	}
+    </script>
+  </body>
+</html>

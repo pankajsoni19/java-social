@@ -1,0 +1,199 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>Notification Settings</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/animation.css" rel="stylesheet">
+	<link href="/css/bootstrap-switch.css" rel="stylesheet">
+	<link href="/css/footer.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+	<div id=wrap>
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Home</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="/logout">Log Out</a></li>
+            <li><a href="#">Help</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+		<label style="font-size: 20px;">General</label>
+		<ul class="nav nav-sidebar">
+			<li><a href="/seller/home">Overview</a></li>
+			<li><a href="/secure/community">Community</a></li>
+		 </ul>
+		<label style="font-size: 20px;">Profile</label>
+          <ul class="nav nav-sidebar">
+			<li><a href="/secure/view_profile">View Profile</a></li>			
+			<li><a href="/secure/edit_profile">Edit Profile</a></li>
+			<li><a href="/secure/change_security">Update Security Options</a></li>
+			<li class=active><a href="#">Notification Settings</a></li>
+		  </ul>
+		  <label style="font-size: 20px;">Inventory</label>
+		  <ul class="nav nav-sidebar">
+			<li><a href="/seller/add_product">Add New Product</a></li>
+			<li><a href="/seller/modify_product">Modify Product</a></li>			
+          </ul>
+		  <label style="font-size: 20px;">Finance</label>
+          <ul class="nav nav-sidebar">
+		  <li><a href="/seller/payment_methods">Update Payment Methods</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+		  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+          <h1 class="page-header" id="profile">Notifications</h1>
+		  <form style=margin-left:20px; role="form" class="form-horizontal" id="form">
+		  <div class=table-responsive><table>
+			<table>
+				<tr>
+				<td><label style="margin: 10px 10px 10px 0px;" class="control-label">When mail is recieved</label></td>
+				<td><input id="getmail" name="getmail" type="checkbox" checked></td>				
+			 </tr>
+			 <tr>
+				<td><label style="margin: 10px 10px 10px 0px;" class="control-label">When a sell is made</label></td>
+				<td><input id="productbought" name="productbought" type="checkbox" checked></td>
+			 </tr>
+			 <tr>
+				<td><label style="margin: 10px 10px 10px 0px;" class="control-label">When inventory falls low</label></td>
+				<td><input id="inventorylow" name="inventorylow" type="checkbox" checked></td>
+			 </tr>
+			 <tr>
+				<td><label style="margin: 10px 10px 10px 0px;" class="control-label">When you recieve a offline chat message</label></td>
+				<td><input id="offlinechat" name="offlinechat" type="checkbox" checked></td>
+			 </tr>
+			 <tr>
+				<td>
+				<button style="max-width: 200px;margin: 10px 10px 10px 0px;" class="btn btn-lg btn-primary btn-block" type="submit">Update</button>
+				</td>
+			 </tr>
+			 </table>
+			</div>
+		  </form>
+        </div>
+      </div>
+     </div>
+	</div>
+	<div id="footer">
+      <div class="container">
+        <p class="muted credit">Example courtesy <a href="http://martinbean.co.uk">Martin Bean</a> and <a href="http://ryanfait.com/sticky-footer/">Ryan Fait</a>.</p>
+      </div>
+    </div>
+
+	<div class="modalspinner"><!-- Place at bottom of page --></div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="/js/docs.min.js"></script>
+	<script src="/js/bootstrap-switch.js"></script>
+    <script>
+	
+    $body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");  },
+        ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+    
+	$("[id='getmail']").bootstrapSwitch();
+	$("[id='productbought']").bootstrapSwitch();
+	$("[id='inventorylow']").bootstrapSwitch(); 
+	$("[id='offlinechat']").bootstrapSwitch();    
+	
+	$("#form").submit(function() {
+		var postdata = "getmail=" + document.getElementById("getmail").checked;
+		postdata += "&productbought=" + document.getElementById("productbought").checked;
+		postdata += "&inventorylow=" + document.getElementById("inventorylow").checked;
+		postdata += "&offlinechat=" + document.getElementById("offlinechat").checked;
+		$.ajax({
+            type: "post",
+            url: "/secure/notification_settings/update",
+            data: postdata,
+			statusCode: {
+				403: function(){
+					window.setTimeout(function() {
+							window.location.href = '/login';
+					}, 30000);
+				}
+			},
+			success:  function(response) {
+				$("#servermessage").css('visibility', 'visible');
+				$("#servermessage").show();			
+				$("#servermessage").html("Notification settings updated");				
+			}	
+        });
+		return false;
+	});
+	
+	$(document).ready(function() {
+		$.ajax({
+            type: "get",
+            dataType: "json",
+            url: "/secure/notification_settings/show",
+			statusCode: {
+				403: function(){
+						var alert = "Session ended. Kindly login again";
+						$("#servermessage").css('visibility', 'visible');
+						$("#servermessage").show();			
+						$("#servermessage").html(alert);
+						window.setTimeout(function() {
+							window.location.href = '/login';
+						}, 30000);
+					}
+			},
+			success: function(data) {
+				console.log(data);
+				$.each(data, function (inx, val) {
+					inx = "#"+inx;
+					if(val == "false"){
+						$(inx).bootstrapSwitch('state', false);
+					}
+				});	
+			}
+		});
+	});
+		
+
+ 
+    </script>
+  </body>
+</html>

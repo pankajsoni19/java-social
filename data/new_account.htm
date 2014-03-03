@@ -1,0 +1,129 @@
+<!--
+This code is property of SOFTWARE JOINT PVT. LTD. This code has been released under MIT License.
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="pankajsoni@softwarejoint.com">
+    <link rel="shortcut icon" href="/img/favicon.ico">
+
+    <title>New Account Registration</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/css/signin.css" rel="stylesheet">
+	<link href="/css/animation.css" rel="stylesheet">
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <div class="container">
+	<span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center; visibility: hidden;" id="servermessage"></span>
+      <form class="form-signin" role="form" id="form" name="new_account" action="/login/register" method="GET">
+	  <span style="margin: 10px 0; display: block; color: #dd4b39; line-height: 18px;text-align: center;" id="servermessage" ></span>
+        <h2 class="form-signin-heading">Account Registration</h2>
+        <input type="text" spellcheck="false" class="form-control" name="uname" placeholder="Username" required autofocus/><br/>
+        <input type="email" class="form-control" name="email" placeholder="Email Address" required><br/>
+        <input type="password" class="form-control" placeholder="Password" name="passwd" style="margin-bottom:0px" required><br/>
+        <input type="password" class="form-control" placeholder="Re-enter Password" name="passwd2" style="margin-bottom:0px" required><br/>
+		<select name="role" id="role" required class="form-control" style=" margin-bottom: 20px; ">
+			<option selected disabled hidden value=""></option>
+			<option value="buyer">Buyer</option>
+			<option value="seller">Seller</option>
+		</select>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+      </form>
+    </div> <!-- /container -->    
+	<div class="modalspinnerlight"><!-- Place at bottom of page --></div>
+	
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>    
+	<script src="/js/bootbox.min.js"></script>
+	<script src="/js/sha3.js"></script>
+	<script src="/js/docs.min.js"></script>
+    <script>
+	
+	$body = $("body");
+
+    $(document).on({
+        ajaxStart: function() { $body.addClass("loading");    },
+         ajaxStop: function() { $body.removeClass("loading"); }    
+    });
+	
+	$("#form").submit(function() {
+		if(!validateForm()){
+			return false;
+		}
+	
+        $.ajax({
+            type: "GET",
+            dataType: "",
+            url: "/login/register",
+            data: $("#form").serialize(),
+			statusCode: {
+				409: function() {
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();
+					$("#servermessage").html("Username selected is already in use.<br/>Kindly select a different Username.");
+					$("#form").find('input').val('');
+				},
+				200: function(){
+					$("#servermessage").css('visibility', 'visible');
+					$("#servermessage").show();
+					$("#servermessage").html("Your account has been created.<br/>An email has been sent to your email address.<br/>Kindly verify your account by clicking the link in email<br/>to complete the registration process.<br/>The registration link will expire in 24 hours.");
+					$("#form").find('input').val('');					
+					window.setTimeout(function() {
+						$body.addClass("loading"); 
+					}, 1000);	
+					window.setTimeout(function() {
+						window.location.href = '/login';
+					}, 30000);					
+				}
+			  },
+        });
+        return false;
+    });
+	
+	function validateForm()
+		{
+			var pwd=document.forms["new_account"]["passwd"].value;
+			var pwd2=document.forms["new_account"]["passwd2"].value;
+			var unamefilter =  /^([a-zA-Z0-9_\.\-])+$/;
+			if(pwd.length <6){
+				bootbox.alert("Minimum password length should be 6.",function() {}); 
+				return false;
+			}
+			var passwfilter = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+			if(!passwfilter.test(pwd)){
+				bootbox.alert("Password should have 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter.",function() {});
+				document.forms["new_account"]["passwd"].value = "";
+				document.forms["new_account"]["passwd2"].value = "";
+				return false;
+			}
+			if(pwd!=pwd2){
+				bootbox.alert("Passwords do not match.",function() {}); 
+				document.forms["new_account"]["passwd"].value = "";
+				document.forms["new_account"]["passwd2"].value = "";
+				return false;
+			}
+			/*var pwdfilter = ((?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%]).{6,20});*/
+			document.forms["new_account"]["passwd"].value = CryptoJS.SHA3(pwd);
+			document.forms["new_account"]["passwd2"].value = "";
+			return true;		
+		}
+	</script>  
+  </body>
+</html>
